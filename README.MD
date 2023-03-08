@@ -20,31 +20,33 @@ Please specify if you plan to implement a GPU version of galax in the correspond
 
 The objective of the course is to accelerate the simulation. You must maximize the number of simulated frames per second, when the display is disabled and the number of simulated particles is 10000. You can use all the techniques that have been seen in the course, and combine them.
 
-* 2 categories:
-  * Exact reproduction of [Model_CPU_naive.cpp](src/Model/Model_CPU/Model_CPU_naive/Model_CPU_naive.cpp)
-  * Modifications of the algorithm allowed
+- 2 categories:
+  - Exact reproduction of [Model_CPU_naive.cpp](src/Model/Model_CPU/Model_CPU_naive/Model_CPU_naive.cpp)
+  - Modifications of the algorithm allowed
 
 **The best group will be given access to a massively parallel machine to test its code (2xAMD EPYC 7643 48-Core Processor (192 threads) + 4xA100 GPUs).**
 
 ## Evaluation
 
-* Project logbook: you will keep an up-to-date document explaining your experiences, your results, your choices, taken from day to day. No need to detail, to put images, to spend time on formatting. You will use text format files that have been created for you [here](https://cloud.imt-atlantique.fr/index.php/s/b5zNRg2dyNgYc3i).
-* Presentation (10 minutes + 5 minutes questions)
-  * Steps fo final implementation
-  * Summary of all results for each step
-  * Critical analysis of the measures
-  * Demonstration
-* Deliverables
-  * Project code
+- Project logbook: you will keep an up-to-date document explaining your experiences, your results, your choices, taken from day to day. No need to detail, to put images, to spend time on formatting. You will use text format files that have been created for you [here](https://cloud.imt-atlantique.fr/index.php/s/b5zNRg2dyNgYc3i).
+- Presentation (10 minutes + 5 minutes questions)
+  - Steps fo final implementation
+  - Summary of all results for each step
+  - Critical analysis of the measures
+  - Demonstration
+- Deliverables
+  - Project code
 
 ### Extras
 
 Any extra feature will be well appreciated and taken into account for the evaluation :
-* Improvement of the graphical rendering
-* Inclusion of other libraries into the cmake build automation
-* Addition of algorithmic variants of the nbody problem (n² -> nlogn)
-* Include Galax as a wrapper for other languages
-* ...
+
+- Improvement of the graphical rendering
+- Inclusion of other libraries into the cmake build automation
+- Addition of algorithmic variants of the nbody problem (n² -> nlogn)
+- Include Galax as a wrapper for other languages
+- ...
+
 ## How to compile and run the code
 
 Galax uses `cmake` in order to automate building.
@@ -63,11 +65,13 @@ Galax needs cmake and the g++ compiler to be compiled.
 ```
 
 You can then launch the compiled binary :
+
 ```bash
     ./build/bin/galax
 ```
 
 You can access the help with the following command :
+
 ```bash
     ./build/bin/galax -h
 ```
@@ -78,21 +82,26 @@ For now, no graphical display has been set up and therefore only the number of f
 
 Galax relies on SDL2 and OpenGL to propose a graphical display.
 Install those dependencies (already installed on campux).
+
 ```bash
     sudo apt install freeglut3-dev libglew-dev libsdl2-dev
 ```
+
 Now the graphical display should be activated through cmake configuration, and the project be rebuilt.
+
 ```bash
     cmake -E chdir "build" cmake -DCMAKE_BUILD_TYPE=Release -DGALAX_LINK_SDL2=ON ..
     cmake --build "build" --config Release --parallel
     ./build/bin/galax --display SDL2
 ```
+
 Launching galax should now open a window with the graphical display.
 
 ### Activating OMP
 
 For now, the performance (FPS: Frame Per Second) is low.
 It is possible to accelerate the processing by using OpenMP for multithreading and the xsimd project (https://github.com/xtensor-stack/xsimd) for vectorization.
+
 ```bash
     cmake -E chdir "build" cmake -DCMAKE_BUILD_TYPE=Release -DGALAX_LINK_OMP=ON -DCMAKE_CXX_FLAGS="-mavx2" ..
     cmake --build "build" --config Release --parallel
@@ -101,7 +110,7 @@ It is possible to accelerate the processing by using OpenMP for multithreading a
 
 ### Activating CUDA
 
-Provided a software platform with a working version of the CUDA toolkit, it is also possible to use the GPU to perform the simulation. Please refer to  online documentation to correctly install CUDA on your system (https://docs.nvidia.com/cuda/).
+Provided a software platform with a working version of the CUDA toolkit, it is also possible to use the GPU to perform the simulation. Please refer to online documentation to correctly install CUDA on your system (https://docs.nvidia.com/cuda/).
 
 ```bash
     cmake -E chdir "build" cmake -DCMAKE_BUILD_TYPE=Release -DGALAX_LINK_CUDA=ON -DCUDA_TOOLKIT_ROOT_DIR="/usr" ..
@@ -112,8 +121,9 @@ Provided a software platform with a working version of the CUDA toolkit, it is a
 ### Validating your results
 
 To check that the particles positions computed from your code are in agreement with the reference (slow) model, use the `--validate` option. For instance
-```bash
-    ./build/bin/galax -C CPU_FAST --validate
-```
-will compare the positions of the `CPU` and `CPU_FAST` models at each step.
 
+```bash
+    ./build/bin/galax -c CPU_FAST --validate
+```
+
+will compare the positions of the `CPU` and `CPU_FAST` models at each step.

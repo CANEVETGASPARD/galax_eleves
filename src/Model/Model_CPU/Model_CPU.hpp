@@ -14,7 +14,7 @@ protected:
     std::vector<float> accelerationsz;
 
 public:
-    Model_CPU(const Initstate& initstate, Particles& particles);
+    Model_CPU(const Initstate &initstate, Particles &particles);
 
     virtual ~Model_CPU() = default;
 
