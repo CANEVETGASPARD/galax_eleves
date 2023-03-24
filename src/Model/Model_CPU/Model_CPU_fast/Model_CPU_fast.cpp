@@ -64,7 +64,7 @@ void Model_CPU_fast ::step()
     }
 #endif
 
-#ifdef XSIMD
+#ifndef XSIMD
     // XSIMD version
     using b_type = xs::batch<float>;
     b_type b = 10.0;
@@ -90,9 +90,9 @@ void Model_CPU_fast ::step()
                 {
                     if (k != j)
                     {
-                        const float diffx = particles.x[j] - particles.x[i];
-                        const float diffy = particles.y[j] - particles.y[i];
-                        const float diffz = particles.z[j] - particles.z[i];
+                        const float diffx = particles.x[j] - particles.x[k];
+                        const float diffy = particles.y[j] - particles.y[k];
+                        const float diffz = particles.z[j] - particles.z[k];
 
                         float dij = diffx * diffx + diffy * diffy + diffz * diffz;
 
@@ -106,15 +106,14 @@ void Model_CPU_fast ::step()
                             dij = 10.0 / (dij * dij * dij);
                         }
 
-                        accelerationsx[i] += diffx * dij * initstate.masses[j];
-                        accelerationsy[i] += diffy * dij * initstate.masses[j];
-                        accelerationsz[i] += diffz * dij * initstate.masses[j];
-
-                        raccx_i = b_type::load_unaligned(&accelerationsx[i]);
-                        raccy_i = b_type::load_unaligned(&accelerationsy[i]);
-                        raccz_i = b_type::load_unaligned(&accelerationsz[i]);
+                        accelerationsx[k] += diffx * dij * initstate.masses[j];
+                        accelerationsy[k] += diffy * dij * initstate.masses[j];
+                        accelerationsz[k] += diffz * dij * initstate.masses[j];
                     }
                 }
+                raccx_i = b_type::load_unaligned(&accelerationsx[i]);
+                raccy_i = b_type::load_unaligned(&accelerationsy[i]);
+                raccz_i = b_type::load_unaligned(&accelerationsz[i]);
             }
             else
             {
@@ -220,7 +219,7 @@ void Model_CPU_fast ::step()
     }
 
 #endif
-#ifndef XSIMD_OMP
+#ifdef XSIMD_OMP
     // OMP + xsimd version
     using b_type = xs::batch<float>;
     b_type b = 10.0;
@@ -247,9 +246,9 @@ void Model_CPU_fast ::step()
                 {
                     if (k != j)
                     {
-                        const float diffx = particles.x[j] - particles.x[i];
-                        const float diffy = particles.y[j] - particles.y[i];
-                        const float diffz = particles.z[j] - particles.z[i];
+                        const float diffx = particles.x[j] - particles.x[k];
+                        const float diffy = particles.y[j] - particles.y[k];
+                        const float diffz = particles.z[j] - particles.z[k];
 
                         float dij = diffx * diffx + diffy * diffy + diffz * diffz;
 
@@ -263,15 +262,14 @@ void Model_CPU_fast ::step()
                             dij = 10.0 / (dij * dij * dij);
                         }
 
-                        accelerationsx[i] += diffx * dij * initstate.masses[j];
-                        accelerationsy[i] += diffy * dij * initstate.masses[j];
-                        accelerationsz[i] += diffz * dij * initstate.masses[j];
-
-                        raccx_i = b_type::load_unaligned(&accelerationsx[i]);
-                        raccy_i = b_type::load_unaligned(&accelerationsy[i]);
-                        raccz_i = b_type::load_unaligned(&accelerationsz[i]);
+                        accelerationsx[k] += diffx * dij * initstate.masses[j];
+                        accelerationsy[k] += diffy * dij * initstate.masses[j];
+                        accelerationsz[k] += diffz * dij * initstate.masses[j];
                     }
                 }
+                raccx_i = b_type::load_unaligned(&accelerationsx[i]);
+                raccy_i = b_type::load_unaligned(&accelerationsy[i]);
+                raccz_i = b_type::load_unaligned(&accelerationsz[i]);
             }
             else
             {
